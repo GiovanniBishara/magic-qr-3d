@@ -1,0 +1,27 @@
+{
+  "name": "magic-qr-3d",
+  "version": "0.1.0",
+  "description": "A tiny 3D neighbourhood that turns into a scannable QR code when you look at it from the right angle.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "vendor": "node scripts/vendor.mjs"
+  },
+  "keywords": [
+    "qr",
+    "qr-code",
+    "three.js",
+    "3d",
+    "anamorphic",
+    "webgl"
+  ],
+  "author": "Giovanni Bishara",
+  "license": "MIT",
+  "devDependencies": {
+    "gifenc": "1.0.3",
+    "jsqr": "^1.4.0",
+    "qrcode-generator": "1.4.4",
+    "three": "0.170.0"
+  }
+}

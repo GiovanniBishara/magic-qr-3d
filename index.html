@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Magic QR 3D</title>
+  <meta name="description" content="A tiny 3D neighbourhood that turns into a scannable QR code when seen from the right angle. Open source, made with three.js." />
+  <meta name="theme-color" content="#cfeaff" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="favicon.svg" alt="" width="32" height="32" />
+      <div>
+        <h1 data-i18n="title">Magic QR 3D</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+      </div>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="it">IT</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <canvas id="scene" tabindex="0" aria-label="3D scene / scena 3D"></canvas>
+  </main>
+
+  <nav class="bar">
+    <div class="hint" id="hint" aria-live="polite"></div>
+    <div class="bar-row">
+    <button type="button" class="btn primary" id="magicBtn"><span class="spark" aria-hidden="true">✦</span> <span data-i18n="magic"></span></button>
+    <button type="button" class="btn ghost only-mobile" id="openPanel" aria-controls="panel" aria-expanded="false">⚙ <span data-i18n="settings"></span></button>
+    </div>
+  </nav>
+
+  <aside class="panel" id="panel">
+    <div class="panel-head only-mobile">
+      <span class="grab" aria-hidden="true"></span>
+      <button type="button" class="btn ghost small" id="closePanel" data-i18n="close"></button>
+    </div>
+
+    <label class="field">
+      <span data-i18n="textLabel"></span>
+      <textarea id="text" rows="2" spellcheck="false" autocomplete="off"></textarea>
+    </label>
+
+    <fieldset class="field">
+      <legend data-i18n="shape"></legend>
+      <div class="seg" id="shape"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend data-i18n="layout"></legend>
+      <div class="seg" id="layout"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend data-i18n="theme"></legend>
+      <div class="swatches" id="theme"></div>
+    </fieldset>
+
+    <button type="button" class="btn ghost wide" id="shuffle">↻ <span data-i18n="shuffle"></span></button>
+
+    <div class="field">
+      <span class="legend" data-i18n="exportTitle"></span>
+      <div class="row">
+        <button type="button" class="btn" id="png" data-i18n="png"></button>
+        <button type="button" class="btn" id="gif" data-i18n="gif"></button>
+        <button type="button" class="btn" id="video" data-i18n="video"></button>
+      </div>
+      <button type="button" class="btn ghost wide" id="copy" data-i18n="copyLink"></button>
+    </div>
+
+    <p class="foot"><span data-i18n="footer"></span> three.js · qrcode-generator · gifenc</p>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

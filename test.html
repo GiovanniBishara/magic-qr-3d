@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Magic QR 3D – scan test</title>
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+  <script src="vendor/jsQR.js"></script>
+  <style>
+    body { font: 14px system-ui, sans-serif; margin: 16px; color: #222; }
+    #box { width: 480px; height: 480px; position: fixed; left: -9999px; }
+    table { border-collapse: collapse; } td, th { padding: 4px 10px; border-bottom: 1px solid #ddd; text-align: left; }
+    .ok { color: #1a7f37; font-weight: 600; } .ko { color: #c62828; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Scan test</h1>
+  <p>Builds every shape × layout × theme, renders the magic view and decodes it with jsQR.
+     It also checks that a tilted 3D view does <em>not</em> decode (otherwise there is no "magic").</p>
+  <p id="summary">Running…</p>
+  <table><thead><tr><th>shape</th><th>layout</th><th>theme</th><th>magic view</th><th>tilted view</th></tr></thead><tbody id="rows"></tbody></table>
+  <div id="box"><canvas id="c"></canvas></div>
+  <script type="module">
+    import { MagicScene, SHAPES } from './js/scene.js';
+    import { THEMES } from './js/themes.js';
+    import { makeQrMatrix } from './js/qr.js';
+
+    const text = new URLSearchParams(location.search).get('text') || 'https://example.com/stay/12?lang=it';
+    const size = 480;
+    const scene = new MagicScene(document.getElementById('c'));
+    const ctx = Object.assign(document.createElement('canvas'), { width: size, height: size }).getContext('2d', { willReadFrequently: true });
+    const decode = (yaw, pitch) => {
+      ctx.drawImage(scene.renderPose(yaw, pitch), 0, 0);
+      const r = jsQR(ctx.getImageData(0, 0, size, size).data, size, size);
+      return r ? r.data : null;
+    };
+    let pass = 0, total = 0;
+    for (const shape of Object.keys(SHAPES)) for (const layout of ['citta', 'sparsa']) for (const theme of Object.keys(THEMES)) {
+      scene.build(makeQrMatrix(text, 'H'), { shape, layout, theme, seed: 7 });
+      scene.beginCapture(size);
+      const magic = decode(0, Math.PI / 2);
+      const tilted = decode(0.85, 0.5);
+      scene.endCapture();
+      const good = magic === text && tilted === null;
+      total++; if (good) pass++;
+      document.getElementById('rows').insertAdjacentHTML('beforeend',
+        `<tr><td>${shape}</td><td>${layout}</td><td>${theme}</td>
+         <td class="${magic === text ? 'ok' : 'ko'}">${magic === text ? 'decoded' : 'FAIL'}</td>
+         <td class="${tilted === null ? 'ok' : 'ko'}">${tilted === null ? 'hidden' : 'readable!'}</td></tr>`);
+      await new Promise((r) => setTimeout(r));
+    }
+    document.getElementById('summary').innerHTML = `<b class="${pass === total ? 'ok' : 'ko'}">${pass}/${total} passed</b> · text: <code>${text}</code>`;
+    window.testResult = { pass, total };
+  </script>
+</body>
+</html>
